@@ -11,6 +11,7 @@ Docker is a containerization platform that allows developers to package applicat
 - Application
 - Dependencies
 - Libraries
+
   Example:
 Running a Node.js app inside a container.
 Command:
