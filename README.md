@@ -2,11 +2,12 @@
 This repository contains Docker concepts, commands and practical implementations.
 
 1. Introduction to Docker
-   Docker is a containerization platform that allows developers to package applications with their dependencies and run them consistently across different environments.
 
-2. Images :- Docker Image act as a set of instructions to build a docker container like a template or blueprint.
+Docker is a containerization platform that allows developers to package applications with their dependencies and run them consistently across different environments.
 
-3. Conatainer :- A container is a lightweight isolated environment that contains:
+3. Images :- Docker Image act as a set of instructions to build a docker container like a template or blueprint.
+
+4. Conatainer :- A container is a lightweight isolated environment that contains:
 - Application
 - Dependencies
 - Libraries
