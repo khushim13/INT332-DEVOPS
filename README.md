@@ -5,16 +5,42 @@ This repository contains Docker concepts, commands and practical implementations
 
 Docker is a containerization platform that allows developers to package applications with their dependencies and run them consistently across different environments.
 
+2.1 Objects of a docker 
+   
+  - Images
+  
+  - Container
+ 
+  - Volume
+  
+  - Network
+
+2.2 Docker Architecture   
+  
+  - Docker Client :- The Docker Client is the command-line interface (CLI) that users use to send Docker commands to the Docker daemon.
+  
+  - Docker Daemon :- The Docker Daemon is the background service that builds images, runs containers, and manages Docker resources.
+  
+  - Docker Registry :- The Docker Registry is a storage system where Docker images are stored and shared (e.g., Docker Hub).
+
+2.3 Cotainerization :- The process of packaging an application and its dependencies into a container so it can run consistency in any environment.
+
 3. Images :- Docker Image act as a set of instructions to build a docker container like a template or blueprint.
 
 4. Conatainer :- A container is a lightweight isolated environment that contains:
+
 - Application
+
 - Dependencies
+
 - Libraries
 
   Example:
+
 Running a Node.js app inside a container.
+
 Command:
+
 docker run nginx
 
 4. Daemon :- A program that executes in the background ready to perform an operation when required. When we use docker commands, we simply sending requests to the docker daemon to start, stop, build, delete a container.
@@ -23,15 +49,65 @@ docker run nginx
 
 6. Docker Hub :- It is just a website which contains bunch of premade images.
 
-7. Docker Architecture
-Docker has three main components:        
-  -- Docker Client  
-  -- Docker Daemon  
-  -- Docker Registry (Docker Hub)
+7. Docker log :- It displays the runtime output and error message of a container.
+
+8. Docker CLI :- It is the command line interface used to interact with docker.
+
+9. DockerFile :- It is a text file containing instructions used to build a Docker image.
+
+10. Image layering :- Docker images are built as a stack of read-only layers, where each Dockerfile instruction creates a new layer that can be cached and reused to optimize storage and build performance. 
+  
+    <img width="654" height="417" alt="image" src="https://github.com/user-attachments/assets/64734ae6-2b44-4a98-b155-ad698b1ac925" />
+
+11. Build Context :- The build context is the set of files and folders that Docker sends to the Docker daemon when running the docker build command.
+
+12. .dockerignore :- Excludes unnecessary files from the build context.
+
+13. cgroups :- Control groups limit and monitor system resources like : CPU, Memory, disk I/O.
+
+14. namespace :- A namespace is a Linux kernel feature that provides isolation by giving each container its own separate view of system resources like processes, network, and filesystem.
+
+    Examples of Docker namespaces
+    
+     <img width="400" height="298" alt="image" src="https://github.com/user-attachments/assets/2494f022-7ee1-40ca-9492-391992c6c435" />
+
+    1. PID Namespace (Process Isolation) :- PID namespace isolates process IDs, so processes inside one container cannot see or interact with  processes in another container or the host.
+
+    2. NET Namespace (Network Isolation) :- Network namespace provides separate network interfaces, IP addresses, routing tables, and ports for each container.
+    
+      Each container gets its own:
+
+       - IP address
+        
+       - Network interface
+        
+       - Port space
+
+     3. MNT Namespace (Mount / Filesystem Isolation) :- Mount namespace isolates the filesystem view, so each container sees its own filesystem structure.  
+
+15. Diffrences
+
+    15.1  Docker Hub vs Docker Registry
+
+    <img width="579" height="241" alt="image" src="https://github.com/user-attachments/assets/6476eec8-c161-4c56-a99c-f34b6df632f9" />
+
+    15.2  Tagging vs Versioning
+
+     <img width="587" height="212" alt="image" src="https://github.com/user-attachments/assets/35b33919-5a8b-4257-b4cb-d748e8095f4a" />
+
+    15.3 Containerization vs Virtualization
+
+      <img width="528" height="266" alt="image" src="https://github.com/user-attachments/assets/d197d24c-4d21-499a-b50c-2c84a3431b53" />
+
+    15.4 Container vs Volume
+
+     <img width="576" height="211" alt="image" src="https://github.com/user-attachments/assets/625bb9bd-2a8c-410f-b36b-8fd9a213f3c5" />
+        
 
  Practical 1: Running Ubuntu Container
 
  Objective -- To run an Ubuntu container using Docker and execute commands inside it.
+  
   <img width="949" height="306" alt="image" src="https://github.com/user-attachments/assets/e2b36198-9960-43f8-a048-21744fe7a0a8" />
   
   Explanation:
@@ -171,8 +247,138 @@ Explanation:
 
     <img width="1216" height="273" alt="image" src="https://github.com/user-attachments/assets/2dde3015-2a87-443c-b404-abb7b6f3c149" />
 
+    Docker Network
 
-  
+    Docker network is a system that enables communication between containers, the Docker host, and external networks.
+
+    Types of Docker Networks
+
+     1. Bridge Network (Default) :- A bridge network connects containers running on the same Docker host and allows them to communicate using container IP or name.
+
+        Practical Commands 
+
+        STEP 1 - Create Network
+
+        STEP 2 - Run containers
+
+        STEP 3 - Test communication
+
+         <img width="1470" height="956" alt="image" src="https://github.com/user-attachments/assets/401f301e-b3ff-4ee6-995c-1569c90c58bf" />
+
+        STEP 4 - List networks
+
+          <img width="1172" height="269" alt="image" src="https://github.com/user-attachments/assets/951ddd98-2c0f-4411-9ca3-5fef0bc04e6d" />
+
+     2. Host Network :- Host network removes isolation and makes the container use the host machine's network directly.
+
+        <img width="1191" height="104" alt="image" src="https://github.com/user-attachments/assets/913dd093-f5e0-49fd-ad9a-c1cb66ced330" />
+
+        <img width="598" height="39" alt="image" src="https://github.com/user-attachments/assets/ca70ea0b-24c4-4df4-8044-882ccd94171d" />
+
+
+     4. Overlay Network :- Overlay network connects containers running on different Docker hosts.
+
+         Used in Docker Swarm / Kubernetes clusters.
+   
+        STEP 1 - Initialize swarm
+        
+         <img width="884" height="90" alt="image" src="https://github.com/user-attachments/assets/168434f6-904d-4f65-aead-907e1f58ec7e" />
+
+        STEP 2 - Create overlay network
+
+          <img width="769" height="60" alt="image" src="https://github.com/user-attachments/assets/304c874a-ab68-4d25-902b-5c240e800125" />
+
+         <img width="629" height="277" alt="image" src="https://github.com/user-attachments/assets/dc9da4f4-6237-43cb-b79d-f513d27ebda7" />
+   
+         <img width="1538" height="120" alt="image" src="https://github.com/user-attachments/assets/6c80ba03-e877-4187-8ee8-310d90ce4a2b" />
+
+
+
+        Useful Docker Network Commands :-
+
+        STEP 1 - List networks
+
+        STEP 2 - Inspect network
+
+         <img width="1238" height="322" alt="image" src="https://github.com/user-attachments/assets/c2712a31-348c-4a9a-8954-a68c63276d80" />
+
+        STEP 3 - Remove network
+
+        STEP 4 - Connect container to network
+
+        STEP 5 - Disconnect container
+
+          <img width="1220" height="309" alt="image" src="https://github.com/user-attachments/assets/37680a19-88fd-44d9-b4da-4214ef32635f" />
+
+        Comparison Table
+        
+         <img width="756" height="385" alt="image" src="https://github.com/user-attachments/assets/ee6f6f3f-f1db-4bc4-ace0-e8808688830a" />
+
+    Building and Running an Nginx Container Using Dockerfile
+
+     STEP - 1 Create index.html
+
+     STEP - 2 Create default.conf
+
+     STEP - 3 Create Dockerfile
+
+     STEP - 4 Build Docker image
+
+     STEP - 5 Run container
+
+     STEP - 6 Access website using browser
+      
+     <img width="1218" height="494" alt="image" src="https://github.com/user-attachments/assets/9b5479fc-b677-47b8-b09b-f7d13f73076a" />
+     
+     <img width="1200" height="302" alt="image" src="https://github.com/user-attachments/assets/31911379-ef50-4bc2-848f-7932ed805101" />
+     
+     <img width="1216" height="331" alt="image" src="https://github.com/user-attachments/assets/e67d82c1-520f-4b09-b40b-e17ad09070a9" />
+     
+     <img width="734" height="318" alt="image" src="https://github.com/user-attachments/assets/3e23c4fb-54d2-4c14-a753-9ef73720f1d6" />
+
+
+     Practical: Run a Node.js App Using Docker
+
+     STEP 1 - Create Project Folder
+
+     STEP 2 - Create Node Application
+
+     STEP 3 - Create package.json
+
+     STEP 4 - Create Dockerfile
+
+     STEP 5 - Check Project Structure
+
+     STEP 6 - Build Docker Image
+
+     STEP 7 - Run the Container
+
+     STEP 8 - Check Running Container
+
+     STEP 9 - Open in Browser
+
+     <img width="1215" height="423" alt="image" src="https://github.com/user-attachments/assets/3da9ead3-a865-4012-9430-7161dbb7e553" />
+
+     <img width="1253" height="301" alt="image" src="https://github.com/user-attachments/assets/5035eb02-603d-4544-96f2-51c6424bd95f" />
+
+     <img width="1224" height="310" alt="image" src="https://github.com/user-attachments/assets/2f79ece3-3fef-4cd2-9fbe-1f4b0ba2acb1" />
+
+     <img width="523" height="284" alt="image" src="https://github.com/user-attachments/assets/1e5fc930-119f-4b59-bb45-c8cc94b7e25a" />
+
+
+
+
+
+
+
+
+        
+
+          
+
+
+
+       
 
     
 
