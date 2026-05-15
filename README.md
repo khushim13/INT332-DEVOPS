@@ -366,6 +366,1330 @@ Explanation:
      <img width="523" height="284" alt="image" src="https://github.com/user-attachments/assets/1e5fc930-119f-4b59-bb45-c8cc94b7e25a" />
 
 
+     DevOps, Microservices, Maven, GitHub Actions and Jenkins
+
+Overview
+
+This repository contains theory notes, practical implementations, architecture explanations, YAML configurations, CI/CD workflows, Maven automation examples, Docker integrations, and Jenkins pipelines.
+
+Topics Covered:
+
+* Microservices Architecture
+* Docker Compose
+* Multi-container Deployments
+* Maven Build Automation
+* GitHub Actions CI/CD
+* Jenkins CI/CD
+* Docker Integration with Maven and Jenkins
+
+⸻
+
+Unit III - Microservices with Docker Compose
+
+Microservices Architecture
+
+What are Microservices?
+
+Microservices are a software architecture style where applications are divided into small independent services.
+
+Each service:
+
+* Performs a specific business function
+* Runs independently
+* Can be deployed separately
+* Has its own database if required
+* Communicates using APIs
+
+Examples:
+
+* Authentication Service
+* Payment Service
+* Notification Service
+* Product Service
+* Order Service
+
+⸻
+
+Need for Microservices
+
+Problems with monolithic applications:
+
+* Large codebase
+* Difficult deployment
+* Slow scaling
+* One failure can crash entire system
+* Hard for multiple teams to work simultaneously
+
+Microservices solve these issues by separating functionalities.
+
+⸻
+
+Monolithic vs Microservices
+
+Feature	Monolithic	Microservices
+Deployment	Single deployment	Independent deployment
+Scalability	Entire app scales	Specific service scales
+Failure Impact	Entire system affected	Isolated failure
+Development	Difficult for large teams	Easier parallel development
+Technology Stack	Usually fixed	Different tech per service
+Maintenance	Complex over time	Easier maintenance
+
+⸻
+
+Advantages of Microservices
+
+Scalability
+
+Specific services can scale independently.
+
+Example:
+
+* Payment service receives high traffic
+* Only payment containers are increased
+
+Isolation
+
+Failure in one service does not stop the entire application.
+
+Agility
+
+Teams can develop and deploy services independently.
+
+API Gateway
+
+Acts as a single entry point for all requests.
+
+Functions:
+
+* Routing
+* Authentication
+* Rate limiting
+* Load balancing
+
+Examples:
+
+* Kong
+* NGINX
+* Spring Cloud Gateway
+
+⸻
+
+Docker Compose
+
+Docker Compose is a tool used to define and manage multi-container Docker applications.
+
+Main file:
+
+compose.yaml
+
+or
+
+docker-compose.yml
+
+⸻
+
+Docker Compose YAML Structure
+
+version: '3.9'
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+volumes:
+  db-data:
+networks:
+  backend:
+
+⸻
+
+Important Docker Compose Components
+
+version
+
+Defines Compose file version.
+
+version: '3.9'
+
+⸻
+
+services
+
+Defines containers.
+
+services:
+  web:
+    image: nginx
+
+⸻
+
+volumes
+
+Persistent storage for containers.
+
+volumes:
+  mysql-data:
+
+⸻
+
+networks
+
+Enables communication between containers.
+
+networks:
+  app-network:
+
+⸻
+
+Writing docker-compose.yml
+
+Example
+
+version: '3.9'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+  database:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: appdb
+    ports:
+      - "3306:3306"
+
+⸻
+
+Environment Variables
+
+Used for configuration management.
+
+.env File
+
+MYSQL_ROOT_PASSWORD=root
+MYSQL_DATABASE=appdb
+
+Compose Usage
+
+environment:
+  MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+⸻
+
+Secrets and Configs
+
+Secrets
+
+Sensitive data storage.
+
+Examples:
+
+* Passwords
+* Tokens
+* API keys
+
+secrets:
+  db_password:
+    file: ./db_password.txt
+
+⸻
+
+Build vs Image
+
+build
+
+Creates image using Dockerfile.
+
+build: .
+
+image
+
+Uses existing image.
+
+image: nginx:latest
+
+⸻
+
+Service Dependency Ordering
+
+depends_on:
+  - database
+
+Used to start dependent services first.
+
+⸻
+
+Docker Compose Commands
+
+Start Containers
+
+docker compose up
+
+Start in Detached Mode
+
+docker compose up -d
+
+Stop Containers
+
+docker compose down
+
+View Running Containers
+
+docker ps
+
+Build Containers
+
+docker compose build
+
+View Logs
+
+docker compose logs
+
+Restart Services
+
+docker compose restart
+
+⸻
+
+Practical Implementation - Node.js + MongoDB
+
+Project Structure
+
+node-mongo-app/
+│
+├── docker-compose.yml
+├── Dockerfile
+├── package.json
+└── server.js
+
+⸻
+
+Dockerfile
+
+FROM node:18
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["node", "server.js"]
+
+⸻
+
+docker-compose.yml
+
+version: '3.9'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+⸻
+
+Run Project
+
+docker compose up --build
+
+⸻
+
+Practical Implementation - WordPress + MySQL
+
+docker-compose.yml
+
+version: '3.9'
+services:
+  wordpress:
+    image: wordpress
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: root
+      WORDPRESS_DB_NAME: wordpress
+    depends_on:
+      - db
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+
+⸻
+
+Start WordPress Stack
+
+docker compose up -d
+
+Access:
+
+http://localhost:8080
+
+⸻
+
+Practical Implementation - Spring Boot + PostgreSQL
+
+docker-compose.yml
+
+version: '3.9'
+services:
+  springboot-app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: appdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+⸻
+
+Unit IV - Maven Build Automation
+
+Why Build Tools Exist
+
+Build tools automate:
+
+* Compilation
+* Dependency management
+* Packaging
+* Testing
+* Deployment
+
+Without build tools:
+
+* Manual dependency download
+* Manual compilation
+* Difficult version management
+* Repetitive tasks
+
+⸻
+
+Problems Solved by Automated Builds
+
+* Dependency conflicts
+* Build consistency
+* Project standardization
+* Automation of testing
+* Deployment management
+
+⸻
+
+Maven
+
+Apache Maven is a build automation and dependency management tool mainly used for Java projects.
+
+⸻
+
+Project Object Model (POM)
+
+Main Maven configuration file:
+
+pom.xml
+
+⸻
+
+Basic POM Structure
+
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>demo-app</artifactId>
+    <version>1.0</version>
+    <dependencies>
+    </dependencies>
+</project>
+
+⸻
+
+Maven Directory Structure
+
+project/
+│
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   └── resources/
+│   └── test/
+│       └── java/
+│
+├── pom.xml
+
+⸻
+
+Maven Build Lifecycle
+
+validate
+
+Validates project structure.
+
+mvn validate
+
+compile
+
+Compiles source code.
+
+mvn compile
+
+test
+
+Runs unit tests.
+
+mvn test
+
+package
+
+Creates JAR/WAR file.
+
+mvn package
+
+verify
+
+Checks package validity.
+
+mvn verify
+
+install
+
+Installs artifact locally.
+
+mvn install
+
+deploy
+
+Deploys artifact to remote repository.
+
+mvn deploy
+
+⸻
+
+Parent POM
+
+Used for shared configuration.
+
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.0.0</version>
+</parent>
+
+⸻
+
+Dependency Scope
+
+Scope	Purpose
+compile	Default scope
+provided	Available during runtime externally
+runtime	Runtime only
+test	Test dependencies
+system	Local system dependency
+
+⸻
+
+Transitive Dependencies
+
+Dependencies automatically downloaded by Maven.
+
+Example:
+
+* Spring Boot dependency downloads additional required libraries.
+
+⸻
+
+Version Conflicts and Resolution
+
+Occurs when multiple dependencies use different versions.
+
+Solution:
+
+* dependencyManagement
+* Explicit version declaration
+
+⸻
+
+Dependency Management
+
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+⸻
+
+Maven Plugins
+
+Compiler Plugin
+
+<plugin>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.11.0</version>
+</plugin>
+
+⸻
+
+Surefire Plugin
+
+Used for unit testing.
+
+<plugin>
+    <artifactId>maven-surefire-plugin</artifactId>
+</plugin>
+
+⸻
+
+Shade Plugin
+
+Creates executable uber JAR.
+
+<plugin>
+    <artifactId>maven-shade-plugin</artifactId>
+</plugin>
+
+⸻
+
+Maven Wrapper
+
+./mvnw clean install
+
+Provides Maven without local installation.
+
+⸻
+
+Maven and Docker Integration
+
+Dockerizing Maven Application
+
+Dockerfile
+
+FROM openjdk:17
+COPY target/app.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+⸻
+
+Build JAR
+
+mvn clean package
+
+⸻
+
+Build Docker Image
+
+docker build -t spring-app .
+
+⸻
+
+Run Docker Container
+
+docker run -p 8080:8080 spring-app
+
+⸻
+
+Push Docker Image
+
+docker tag spring-app username/spring-app
+docker push username/spring-app
+
+⸻
+
+Unit V - Continuous Integration with GitHub Actions
+
+GitHub Actions
+
+GitHub Actions automates:
+
+* Build
+* Test
+* Deploy
+* CI/CD workflows
+
+Workflow directory:
+
+.github/workflows/
+
+⸻
+
+Workflow Structure
+
+name: Java CI
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      -name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build
+        run: mvn clean install
+Workflow Components 
+
+workflows 
+
+Defines automation files. 
+
+jobs 
+
+Collection of tasks. 
+
+steps 
+
+Commands executed sequentially. 
+
+actions 
+
+Reusable workflow units. 
+
+runners 
+
+Machines executing workflows. 
+
+ 
+
+Workflow Triggers 
+
+Push Trigger 
+
+on: 
+  push: 
+
+ 
+
+Pull Request Trigger 
+
+on: 
+  pull_request: 
+
+ 
+
+Schedule Trigger 
+
+on: 
+  schedule: 
+    - cron: '0 0 * * *' 
+
+ 
+
+Manual Trigger 
+
+on: 
+  workflow_dispatch: 
+
+ 
+
+Matrix Strategy 
+
+strategy: 
+  matrix: 
+    java: [17, 21] 
+
+ 
+
+Using Cache 
+
+- uses: actions/cache@v4 
+
+Improves workflow speed. 
+
+ 
+
+Multi Job Workflow 
+
+jobs: 
+  build: 
+ 
+  test: 
+    needs: build 
+
+ 
+
+Docker Build with GitHub Actions 
+
+- name: Build Docker Image 
+  run: docker build -t app . 
+
+ 
+
+Push Docker Image to Docker Hub 
+
+- name: Login to DockerHub 
+  uses: docker/login-action@v3 
+  with: 
+    username: ${{ secrets.DOCKER_USERNAME }} 
+    password: ${{ secrets.DOCKER_PASSWORD }} 
+ 
+- name: Push Image 
+  run: docker push username/app 
+
+ 
+
+Push Docker Image to GHCR 
+
+- name: Login to GHCR 
+  run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u USERNAME --password-stdin 
+
+ 
+
+GitHub Hosted Runners 
+
+Managed by GitHub. 
+
+Examples: 
+
+ubuntu-latest 
+
+windows-latest 
+
+macos-latest 
+
+ 
+
+Self Hosted Runners 
+
+Custom machines maintained by organizations. 
+
+Advantages: 
+
+More control 
+
+Custom software 
+
+Better performance 
+
+ 
+
+Runner Security 
+
+Best Practices: 
+
+Use secrets 
+
+Avoid hardcoded credentials 
+
+Restrict repository permissions 
+
+Monitor workflows 
+
+ 
+
+CI/CD Deployment Example 
+
+- name: Deploy 
+  run: | 
+    ssh user@server "docker pull username/app && docker compose up -d" 
+
+ 
+
+GitHub Actions Important Commands 
+
+View Workflows 
+
+gh workflow list 
+
+Trigger Workflow 
+
+gh workflow run workflow.yml 
+
+ 
+
+Jenkins CI/CD 
+
+Jenkins Foundations 
+
+Jenkins is an automation server used for: 
+
+Continuous Integration 
+
+Continuous Delivery 
+
+Automated Testing 
+
+Automated Deployment 
+
+ 
+
+Jenkins Architecture 
+
+Master/Agent Model 
+
+Master 
+
+Controls pipelines and scheduling. 
+
+Agent 
+
+Executes jobs. 
+
+ 
+
+Jenkins Installation 
+
+Docker Installation 
+
+docker run -p 8080:8080 -p 50000:50000 jenkins/jenkins:lts 
+
+ 
+
+Jenkins Plugins 
+
+Important Plugins: 
+
+Git Plugin 
+
+Docker Plugin 
+
+Maven Integration Plugin 
+
+Pipeline Plugin 
+
+ 
+
+Jenkins Security 
+
+Features: 
+
+User management 
+
+Role-based access 
+
+Credentials management 
+
+ 
+
+Freestyle vs Pipeline Jobs 
+
+Feature 
+
+Freestyle 
+
+Pipeline 
+
+Configuration 
+
+UI based 
+
+Code based 
+
+Flexibility 
+
+Limited 
+
+High 
+
+Version Control 
+
+Difficult 
+
+Easy 
+
+Reusability 
+
+Low 
+
+High 
+
+ 
+
+Declarative Pipeline 
+
+pipeline { 
+    agent any 
+ 
+    stages { 
+        stage('Build') { 
+            steps { 
+                sh 'mvn clean install' 
+            } 
+        } 
+    } 
+} 
+
+ 
+
+Scripted Pipeline 
+
+node { 
+    stage('Build') { 
+        sh 'mvn clean install' 
+    } 
+} 
+
+ 
+
+Jenkinsfile Structure 
+
+pipeline { 
+    agent any 
+ 
+    environment { 
+        APP_NAME = 'demo' 
+    } 
+ 
+    stages { 
+        stage('Checkout') { 
+            steps { 
+                git 'https://github.com/user/repo.git' 
+            } 
+        } 
+ 
+        stage('Build') { 
+            steps { 
+                sh 'mvn clean package' 
+            } 
+        } 
+ 
+        stage('Test') { 
+            steps { 
+                sh 'mvn test' 
+            } 
+        } 
+    } 
+} 
+
+ 
+
+Pipeline Parameters 
+
+parameters { 
+    string(name: 'ENV', defaultValue: 'dev') 
+} 
+
+ 
+
+Environment Variables 
+
+environment { 
+    VERSION = '1.0' 
+} 
+
+ 
+
+Multi Branch Pipeline 
+
+Automatically builds multiple Git branches. 
+
+ 
+
+Pipeline Stages 
+
+Checkout 
+
+Fetch source code. 
+
+Build 
+
+Compile project. 
+
+Test 
+
+Run test cases. 
+
+Package 
+
+Generate artifacts. 
+
+Post Actions 
+
+Cleanup and notifications. 
+
+ 
+
+Managing Artifacts 
+
+archiveArtifacts artifacts: 'target/*.jar' 
+
+ 
+
+Docker Integration with Jenkins 
+
+Build Docker Image 
+
+sh 'docker build -t app .' 
+
+ 
+
+Push Docker Image 
+
+sh 'docker push username/app' 
+
+ 
+
+Jenkins and GitHub Integration 
+
+Webhook URL 
+
+http://jenkins-url/github-webhook/ 
+
+ 
+
+Backup and Restore 
+
+Important Jenkins data: 
+
+Jobs 
+
+Plugins 
+
+Credentials 
+
+Pipelines 
+
+Backup directory: 
+
+/var/lib/jenkins 
+
+ 
+
+Maven in Jenkins 
+
+Global Tool Configuration 
+
+Configure Maven path inside Jenkins. 
+
+ 
+
+Run Maven Build 
+
+sh 'mvn clean install' 
+
+ 
+
+Code Coverage and Test Reports 
+
+JUnit reports: 
+
+junit 'target/surefire-reports/*.xml' 
+
+ 
+
+Triggering Builds 
+
+pollSCM 
+
+triggers { 
+    pollSCM('* * * * *') 
+} 
+
+ 
+
+GitHub Webhook Trigger 
+
+Automatically triggers Jenkins build after GitHub push. 
+
+ 
+
+Jenkins Agents 
+
+Types: 
+
+SSH Agents 
+
+SFTP Agents 
+
+Container-based Agents 
+
+ 
+
+Jenkins Deployment Flow 
+
+Steps 
+
+Developer pushes code to GitHub 
+
+GitHub webhook triggers Jenkins 
+
+Jenkins checks out source code 
+
+Maven builds application 
+
+Test cases execute 
+
+Docker image builds 
+
+Image pushed to registry 
+
+Deployment happens on server 
+
+ 
+
+Complete CI/CD Flow Example 
+
+Clone Repository 
+
+git clone https://github.com/user/project.git 
+
+Build Maven Project 
+
+mvn clean package 
+
+Build Docker Image 
+
+docker build -t app . 
+
+Push Docker Image 
+
+docker push username/app 
+
+Deploy Using Docker Compose 
+
+docker compose up -d 
+
+ 
+
+Common Docker Commands 
+
+Pull Image 
+
+docker pull nginx 
+
+List Images 
+
+docker images 
+
+Remove Container 
+
+docker rm container_id 
+
+Remove Image 
+
+docker rmi image_id 
+
+View Logs 
+
+docker logs container_id 
+
+ 
+
+Common Git Commands 
+
+Initialize Repository 
+
+git init 
+
+Add Files 
+
+git add . 
+
+Commit Changes 
+
+git commit -m "Initial Commit" 
+
+Push Repository 
+
+git push origin main 
+
+ 
+
+Common Maven Commands 
+
+Clean Project 
+
+mvn clean 
+
+Compile Project 
+
+mvn compile 
+
+Run Tests 
+
+mvn test 
+
+Package Application 
+
+mvn package 
+
+Install Dependencies 
+
+mvn install 
+
+ 
+
+Best Practices 
+
+Docker 
+
+Use lightweight images 
+
+Use multi-stage builds 
+
+Avoid running containers as root 
+
+Use .dockerignore 
+
+Maven 
+
+Keep dependencies updated 
+
+Use dependency management 
+
+Avoid unnecessary plugins 
+
+GitHub Actions 
+
+Use secrets 
+
+Cache dependencies 
+
+Separate workflows properly 
+
+Jenkins 
+
+Use pipelines as code 
+
+Use agents efficiently 
+
+Secure credentials properly 
+
+Backup Jenkins regularly 
+
+ 
+
+Conclusion 
+
+This repository demonstrates: 
+
+Microservices architecture implementation 
+
+Multi-container deployments using Docker Compose 
+
+Maven automation and dependency management 
+
+CI/CD pipelines using GitHub Actions 
+
+Jenkins automation workflows 
+
+Docker integrations with Maven and Jenkins 
+
+Practical deployment workflows for modern DevOps environments 
+
 
 
 
